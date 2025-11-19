@@ -11,7 +11,7 @@ export default function Home() {
     const services = [
     {
       id: 1,
-      img: "/logo.png",
+      img: "/tratamiento-facial.jpg",
       title: "Tratamientos Faciales",
       category: "Facial",
       desc: "Limpieza profunda, hidratación y tratamientos antiedad adaptados a tu tipo de piel.",
@@ -19,7 +19,7 @@ export default function Home() {
     },
     {
       id: 2,
-      img: "/logo.png",
+      img: "/TratamientosCorporales.jpg",
       title: "Tratamientos Corporales",
       category: "Corporal",
       desc: "Masajes remodelantes, drenaje y cuidado corporal para mejorar la circulación y la firmeza.",
@@ -27,7 +27,7 @@ export default function Home() {
     },
     {
       id: 3,
-      img: "/logo.png",
+      img: "/DepilacionLaser.jpg",
       title: "Depilación Láser",
       category: "Depilación",
       desc: "Depilación láser progresiva para reducir el vello de forma duradera y segura.",
@@ -35,7 +35,7 @@ export default function Home() {
     },
     {
       id: 4,
-      img: "/logo.png",
+      img: "/Maquillaje.jpg",
       title: "Maquillaje",
       category: "Maquillaje",
       desc: "Maquillaje social, de día o de noche, realzando tus rasgos sin perder tu esencia.",
@@ -43,7 +43,7 @@ export default function Home() {
     },
     {
       id: 5,
-      img: "/logo.png",
+      img: "/Manicura.jpg",
       title: "Manicura",
       category: "Uñas",
       desc: "Manicura clásica o semipermanente con acabado limpio, pulido y duradero.",
@@ -51,7 +51,7 @@ export default function Home() {
     },
     {
       id: 6,
-      img: "/logo.png",
+      img: "/Pedicura.png",
       title: "Pedicura",
       category: "Uñas",
       desc: "Cuidado completo de pies, limado, hidratación y esmaltado para una pisada perfecta.",
@@ -59,7 +59,7 @@ export default function Home() {
     },
     {
       id: 7,
-      img: "/logo.png",
+      img: "/DepilacionTradicional.jpg",
       title: "Depilación Tradicional",
       category: "Depilación",
       desc: "Depilación con cera para una piel suave y libre de vello durante semanas.",
@@ -67,7 +67,7 @@ export default function Home() {
     },
     {
       id: 8,
-      img: "/logo.png",
+      img: "/DisenodeCejas.jpg",
       title: "Diseño de Cejas",
       category: "Cejas y Pestañas",
       desc: "Diseño y perfilado de cejas para enmarcar tu mirada con armonía.",
@@ -75,7 +75,7 @@ export default function Home() {
     },
     {
       id: 9,
-      img: "/logo.png",
+      img: "/LiftingdePestana.jpg",
       title: "Lifting de Pestañas",
       category: "Cejas y Pestañas",
       desc: "Curvatura y definición de tus pestañas naturales para un efecto de mirada abierta.",
@@ -83,7 +83,7 @@ export default function Home() {
     },
     {
       id: 10,
-      img: "/logo.png",
+      img: "/Microblading.gif",
       title: "Microblading",
       category: "Cejas y Pestañas",
       desc: "Micropigmentación pelo a pelo para cejas definidas y naturales.",
@@ -91,7 +91,7 @@ export default function Home() {
     },
     {
       id: 11,
-      img: "/logo.png",
+      img: "/MasajesRelajantes.jpg",
       title: "Masajes Relajantes",
       category: "Masajes",
       desc: "Masajes suaves para aliviar tensiones, mejorar el descanso y bajar el estrés.",
