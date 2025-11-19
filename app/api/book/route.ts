@@ -29,7 +29,6 @@ export async function POST(req: Request) {
       ? `Cita Lucia Esdo - ${name}`
       : "Cita Lucia Esdo";
 
-    // Construimos una descripción que incluya email y notas
     let description = "";
     if (name) description += `Nombre: ${name}\n`;
     if (email) description += `Email: ${email}\n`;
@@ -46,8 +45,6 @@ export async function POST(req: Request) {
         dateTime: end.toISOString(),
         timeZone: TIMEZONE,
       },
-      // 👇 OJO: NADA de attendees aquí
-      // attendees: email ? [{ email }] : [],
     };
 
     const insertRes = await calendar.events.insert({
@@ -55,9 +52,11 @@ export async function POST(req: Request) {
       requestBody: event,
     });
 
-    console.log("Evento creado:", insertRes.data.id);
+    console.log("📅 Evento creado en calendario:", calendarId);
+    console.log("👉 Datos del evento:", insertRes.data);
 
-    return NextResponse.json({ ok: true });
+    // 🔥 DEVOLVEMOS LOS DATOS DEL EVENTO AL FRONT
+    return NextResponse.json({ ok: true, event: insertRes.data });
   } catch (error: any) {
     console.error("Error al crear la reserva en Google Calendar:");
     console.error(error?.response?.data || error);
