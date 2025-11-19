@@ -1,0 +1,129 @@
+/* CONTENEDOR GENERAL */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+
+  /* Sin fondo sólido, con blur */
+  background: rgba(0, 0, 0, 0.15); /* puedes bajar más la opacidad si quieres */
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* LOGO A LA IZQUIERDA */
+.navbar-logo img {
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+/* MENÚ OPCIONES A LA DERECHA (ESCRITORIO) */
+.navbar-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.75rem;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.navbar-menu li {
+  cursor: pointer;
+  position: relative;
+  padding-bottom: 2px;
+  font-size: large;
+}
+
+/* Pequeño subrayado animado */
+.navbar-menu li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background: #04707A;
+  transition: width 0.2s ease;
+}
+
+.navbar-menu li:hover::after {
+  width: 100%;
+}
+
+/* BOTÓN HAMBURGUESA (MÓVIL) */
+.navbar-toggle {
+  display: none; /* se muestra solo en móvil */
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.navbar-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+
+/* Animación del icono cuando está abierto */
+.navbar-toggle.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar-toggle.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggle.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  /* Mostrar hamburguesa y ocultar menú por defecto */
+  .navbar-toggle {
+    display: flex;
+  }
+
+  .navbar-menu {
+    position: absolute;
+    top: 64px;
+    right: 0rem;
+    padding: 0.75rem 1rem;
+    margin: 0;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 150px;    /* Ancho fijo */
+
+    background: rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+
+    display: none;
+  }
+
+  .navbar-menu.is-open {
+    display: flex;
+  }
+
+  .navbar-menu li {
+    padding: 0.25rem 0;
+  }
+}

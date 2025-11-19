@@ -1,0 +1,62 @@
+.card-content {
+  width: 100%;
+  height: 260px; /* un poco más alto para texto y precio */
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+
+  /* Shadow más suave y estética más premium */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card-content:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.18);
+}
+
+/* Overlay degradado más elegante */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.3rem;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.05)
+  );
+
+  color: #fff;
+}
+
+/* Título del servicio */
+.card-overlay h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* Precio destacado */
+.card-overlay h4 {
+  margin: 0.3rem 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #82bbbf; /* tono pastel del logo */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+/* Descripción */
+.card-overlay p {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  opacity: 0.95;
+  line-height: 1.35;
+  max-width: 90%;
+}

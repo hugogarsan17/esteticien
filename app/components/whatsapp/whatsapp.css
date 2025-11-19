@@ -1,0 +1,130 @@
+/* Contenedor general del widget (posición fija abajo a la derecha) */
+.whatsapp-widget {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 200;
+}
+
+/* Botón flotante */
+.whatsapp-fab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+
+  background: #25d366; /* verde WhatsApp */
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.whatsapp-fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Icono */
+.whatsapp-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whatsapp-icon img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* Ocultar texto en móviles pequeños si quieres que sea solo el icono */
+@media (max-width: 480px) {
+  .whatsapp-fab-text {
+    display: none;
+  }
+
+  .whatsapp-fab {
+    border-radius: 50%;
+    padding: 0.7rem;
+  }
+}
+
+/* Pop-up / burbuja */
+.whatsapp-popup {
+  position: absolute;
+  right: 0;
+  bottom: 60px;
+  width: 260px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: wa-fade-in 0.2s ease-out;
+}
+
+/* Cabecera del popup */
+.whatsapp-popup-header {
+  padding: 0.7rem 0.9rem;
+  background: linear-gradient(90deg, #82bbbf, #04707a);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.whatsapp-popup-close {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+/* Cuerpo del popup */
+.whatsapp-popup-body {
+  padding: 0.9rem;
+  font-size: 0.85rem;
+  color: #4e7b80;
+}
+
+.whatsapp-popup-body p {
+  margin-bottom: 0.7rem;
+}
+
+.whatsapp-popup-body a {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: #25d366;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.whatsapp-popup-body a:hover {
+  background: #1ebe5d;
+  transform: translateY(-1px);
+}
+
+/* Animación de aparición */
+@keyframes wa-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
