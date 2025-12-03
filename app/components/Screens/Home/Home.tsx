@@ -151,17 +151,38 @@ export default function Home() {
       </p>
     </div>
 
-    <div className="about-highlight">
-      <div className="about-badge">
-        +5 años de experiencia
+
+<div className="about-highlight" role="region" aria-label="Experiencia y especialización">
+  <div className="about-top">
+    <span className="about-badge" aria-hidden="false">
+      <svg className="badge-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="M12 2l2.6 5.3L20 9l-4 3.6L17 20l-5-2.6L7 20l1-7.4L4 9l5.4-1.7L12 2z" fill="currentColor"/>
+      </svg>
+      +5 años de experiencia
+    </span>
+
+    <p className="about-small">
+      Especializada en estética facial, cejas y tratamientos personalizados.
+    </p>
+  </div>
+
+  <div className="about-meta">
+    <dl>
+      <div className="meta-item">
+        <dt>Atención</dt>
+        <dd>Individual y personalizada</dd>
       </div>
-      <p className="about-small">
-        Especializada en estética facial, cejas y tratamientos personalizados.
-      </p>
-    </div>
+      <div className="meta-item">
+        <dt>Ubicación</dt>
+        <dd>Consultorio</dd>
+      </div>
+    </dl>
   </div>
 </div>
-  <div className="section service">
+
+  </div>
+</div>
+  <div className="section service" id="services">
         <div className="section-title">
           <h2>Services</h2>
         </div>
@@ -193,7 +214,7 @@ export default function Home() {
           ))}
         </div>
       </div>
-<div className="section reservar">
+<div className="section reservar" id="reservas">
   <div className="section-title">
     <h2>Reservas</h2>
   </div>

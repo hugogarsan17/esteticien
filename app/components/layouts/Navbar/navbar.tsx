@@ -24,8 +24,9 @@ export default function Navbar() {
       </button>
 
       <ul className={`navbar-menu ${open ? "is-open" : ""}`}>
-        <li>Home</li>
-        <li>Services</li>
+        <li><a href="#">Inicio</a></li>
+        <li> <a href="#services">Servicios</a></li>
+        <li> <a href="#reservas">Reservas</a></li>
       </ul>
     </nav>
   );
