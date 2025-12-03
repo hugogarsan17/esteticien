@@ -120,7 +120,8 @@ export default function Home() {
 
       <div className="main-hero">
         <div className="main-title">
-          <h1>Lucia Esdo | Belleza</h1>
+          <img src="logo-noback.png" alt="" />
+          <h1></h1>
         </div>
         <div className="cta-section">
           <button className="contact" > <a href="/contact">Contactar </a></button>

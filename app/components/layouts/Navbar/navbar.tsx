@@ -9,7 +9,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <img src="/logo-noback.png" alt="logo" />
+        <img src="/logo-noback 2.png" alt="logo" />
       </div>
 
       {/* Botón hamburguesa (solo móvil) */}
@@ -26,7 +26,6 @@ export default function Navbar() {
       <ul className={`navbar-menu ${open ? "is-open" : ""}`}>
         <li>Home</li>
         <li>Services</li>
-        <li>Contact</li>
       </ul>
     </nav>
   );
