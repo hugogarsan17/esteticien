@@ -194,7 +194,7 @@ export default function BookingWidget() {
           onClick={handleBook}
           disabled={!selectedTimeIso || !name}
         >
-          Confirmar reserva — {selectedService.title} ({selectedService.duration} min)
+          Confirmar reserva — {selectedService.title}
         </button>
       </div>
 
