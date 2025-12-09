@@ -7,7 +7,7 @@ export default function Whatsapp() {
   const [open, setOpen] = useState(false);
 
   // PON AQUÍ TU NÚMERO EN FORMATO INTERNACIONAL, SIN ESPACIOS
-  const phone = "34600000000"; // ejemplo: 34 + número de España
+  const phone = "34678638787"; // ejemplo: 34 + número de España
   const defaultMessage =
     "Hola, me gustaría pedir información sobre tus servicios 😊";
 

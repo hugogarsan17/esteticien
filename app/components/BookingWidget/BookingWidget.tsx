@@ -1,9 +1,15 @@
+// src/components/BookingWidget.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-type Slot = { label: string; iso: string };
-type Service = { id: number; title: string; category: string; price: number; duration: number };
+export type Service = {
+  id: number;
+  title: string;
+  category: string;
+  price: number;
+  duration: number;
+};
 
 const SERVICES: Service[] = [
   { id: 1, title: "Tratamientos Faciales", category: "Facial", price: 40, duration: 60 },
@@ -19,14 +25,22 @@ const SERVICES: Service[] = [
   { id: 11, title: "Masajes Relajantes", category: "Masajes", price: 45, duration: 60 },
 ];
 
-export default function BookingWidget() {
+type Slot = { label: string; iso: string };
+
+interface BookingWidgetProps {
+  // Se puede pasar null si no hay servicio preseleccionado
+  selectedService?: { id: number; title: string; category?: string; price?: number; duration?: number } | null;
+}
+
+export default function BookingWidget({ selectedService = null }: BookingWidgetProps) {
   const [date, setDate] = useState<string>(() => {
     const today = new Date();
     return today.toISOString().split("T")[0]; // YYYY-MM-DD
   });
 
+  // serviceId interno (se sincroniza con `selectedService` cuando se pasa por props)
   const [serviceId, setServiceId] = useState<number>(SERVICES[0].id);
-  const selectedService = SERVICES.find(s => s.id === serviceId)!;
+  const currentService = SERVICES.find((s) => s.id === serviceId)!;
 
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -37,26 +51,40 @@ export default function BookingWidget() {
   const [selectedTimeIso, setSelectedTimeIso] = useState<string | null>(null);
   const [bookingStatus, setBookingStatus] = useState<null | "ok" | "error">(null);
 
+  // Si el prop selectedService cambia, sincronizamos el selector interno
   useEffect(() => {
+    if (selectedService && typeof selectedService.id === "number") {
+      setServiceId(selectedService.id);
+    }
+  }, [selectedService]);
+
+  // Fetch slots cada vez que cambie la fecha o el servicio seleccionado internamente
+  useEffect(() => {
+    let abort = false;
     async function fetchSlots() {
       setLoadingSlots(true);
       setSelectedTimeIso(null);
       setBookingStatus(null);
       try {
-        // pedimos la disponibilidad pasando la duración del servicio seleccionado
+        const duration = currentService.duration ?? 60;
         const res = await fetch(
-          `/api/availability?date=${date}&duration=${selectedService.duration}&grid=15`
+          `/api/availability?date=${encodeURIComponent(date)}&duration=${encodeURIComponent(duration)}&grid=15`
         );
+        if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
+        if (abort) return;
         setSlots(Array.isArray(data.slots) ? data.slots : []);
       } catch (e) {
         console.error("fetchSlots error:", e);
-        setSlots([]);
+        if (!abort) setSlots([]);
       } finally {
-        setLoadingSlots(false);
+        if (!abort) setLoadingSlots(false);
       }
     }
     fetchSlots();
+    return () => {
+      abort = true;
+    };
   }, [date, serviceId]); // refetch cuando cambie la fecha o el servicio
 
   async function handleBook() {
@@ -74,10 +102,10 @@ export default function BookingWidget() {
           name,
           email,
           notes,
-          serviceId: selectedService.id,
-          serviceTitle: selectedService.title,
-          duration: selectedService.duration,
-          price: selectedService.price,
+          serviceId: currentService.id,
+          serviceTitle: currentService.title,
+          duration: currentService.duration,
+          price: currentService.price,
         }),
       });
 
@@ -106,10 +134,7 @@ export default function BookingWidget() {
       <div className="booking-row">
         <label>
           Servicio:
-          <select
-            value={serviceId}
-            onChange={(e) => setServiceId(Number(e.target.value))}
-          >
+          <select value={serviceId} onChange={(e) => setServiceId(Number(e.target.value))}>
             {SERVICES.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.title} — {s.price}€
@@ -118,18 +143,16 @@ export default function BookingWidget() {
           </select>
         </label>
         <div style={{ marginTop: 6 }}>
-          <small>Duración: {selectedService.duration} min · Categoría: {selectedService.category}</small>
+          <small>
+            Duración: {currentService.duration} min · Categoría: {currentService.category}
+          </small>
         </div>
       </div>
 
       <div className="booking-row">
         <label>
           Fecha:
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </label>
       </div>
 
@@ -164,46 +187,32 @@ export default function BookingWidget() {
       <div className="booking-row">
         <label>
           Nombre:
-          <input
-            type="text"
-            placeholder="Tu nombre"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <input type="text" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} />
         </label>
       </div>
 
       <div className="booking-row">
         <label>
           Email (opcional):
-          <input
-            type="email"
-            placeholder="para enviarte confirmación"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <input type="email" placeholder="para enviarte confirmación" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
       </div>
 
-    
+      <div className="booking-row">
+        <label>
+          Notas (opcional):
+          <input type="text" placeholder="Alergias, observaciones, etc." value={notes} onChange={(e) => setNotes(e.target.value)} />
+        </label>
+      </div>
 
       <div className="booking-row">
-        <button
-          type="button"
-          className="btn-reservar"
-          onClick={handleBook}
-          disabled={!selectedTimeIso || !name}
-        >
-          Confirmar reserva — {selectedService.title}
+        <button type="button" className="btn-reservar" onClick={handleBook} disabled={!selectedTimeIso || !name}>
+          Confirmar reserva — {currentService.title}
         </button>
       </div>
 
-      {bookingStatus === "ok" && (
-        <p className="booking-success">✅ Reserva realizada. Te llegará la cita a tu calendario / email.</p>
-      )}
-      {bookingStatus === "error" && (
-        <p className="booking-error">❌ Ha habido un problema al reservar. Inténtalo de nuevo.</p>
-      )}
+      {bookingStatus === "ok" && <p className="booking-success">✅ Reserva realizada. Te llegará la cita a tu calendario / email.</p>}
+      {bookingStatus === "error" && <p className="booking-error">❌ Ha habido un problema al reservar. Inténtalo de nuevo.</p>}
     </div>
   );
 }
