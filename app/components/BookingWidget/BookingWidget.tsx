@@ -231,8 +231,8 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
           />
         </label>
       </div>
-
-      <div className="booking-actions">
+        <div>
+                <div className="booking-actions">
         <button
           type="button"
           className="booking-submit"
@@ -243,6 +243,8 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
           {submitting ? "Reservando…" : `Confirmar reserva — ${currentService.title}`}
         </button>
       </div>
+        </div>
+
 
       <div aria-live="polite" style={{ minHeight: 28, marginTop: 12 }}>
         {bookingStatus === "ok" && <p className="booking-success">✅ Reserva realizada. Te llegará la cita a tu calendario / email.</p>}
