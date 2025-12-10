@@ -6,6 +6,7 @@ import "./Home.css";
 import Cards from "../../cards/Cards";
 import Whatsapp from "../../whatsapp/whatsapp";
 import BookingWidget from "../../BookingWidget/BookingWidget";
+import Footer from "../../layouts/Footer/Footer";
 
 interface Service {
   id: number;
@@ -107,6 +108,7 @@ export default function Home() {
       </div>
 
       <Whatsapp />
+      <Footer />
     </div>
   );
 }
