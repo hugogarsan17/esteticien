@@ -30,14 +30,16 @@ export async function GET(req: Request) {
   try {
     const { calendar, calendarId } = await getCalendarClient();
 
+    // 1) Construir strings locales (hora "en pared")
     const dayStartLocalString = `${date}T${String(WORK_START_HOUR).padStart(2, "0")}:00:00`;
     const dayEndLocalString = `${date}T${String(WORK_END_HOUR).padStart(2, "0")}:00:00`;
 
-    // Convertir esas horas locales a UTC for FreeBusy query (fromZonedTime convierte hora zonal a UTC)
-    const dayStartUtc = fromZonedTime(dayStartLocalString, TIMEZONE); // Date en UTC equivalente
+    // 2) Convertir esas horas LOCALES a UTC para la consulta FreeBusy
+    // En date-fns-tz v1 usamos fromZonedTime(localString, zone) para obtener el Date UTC correcto
+    const dayStartUtc = fromZonedTime(dayStartLocalString, TIMEZONE);
     const dayEndUtc = fromZonedTime(dayEndLocalString, TIMEZONE);
 
-    // FreeBusy
+    // 3) Llamada FreeBusy (usamos timeMin/timeMax en UTC ISO)
     const fbRes = await calendar.freebusy.query({
       requestBody: {
         timeMin: dayStartUtc.toISOString(),
@@ -49,49 +51,48 @@ export async function GET(req: Request) {
 
     const busyRaw = fbRes.data.calendars?.[calendarId]?.busy || [];
     const busySlots: { start: Date; end: Date }[] = busyRaw.map((b: any) => ({
-      start: new Date(b.start),
+      start: new Date(b.start), // b.start es ISO en UTC
       end: new Date(b.end),
     }));
 
-    // Trabajamos la generación de candidatos en "zona local" usando toZonedTime para obtener Date con campos locales
-    const workStartZoned = toZonedTime(dayStartUtc, TIMEZONE); // Date que representa la hora local
-    const workEndZoned = toZonedTime(dayEndUtc, TIMEZONE);
+    // 4) Para iterar en "hora de pared" convertimos UTC -> zoned (hora local con campos correctos)
+    const workStartLocal = toZonedTime(dayStartUtc, TIMEZONE); // representa 09:00 en la zona
+    const workEndLocal = toZonedTime(dayEndUtc, TIMEZONE);     // representa 17:00 en la zona
 
     const available: { label: string; iso: string }[] = [];
 
-    let cursor = new Date(workStartZoned);
-    // Alinear cursor a la grid (redondear hacia abajo)
-    const mins = cursor.getMinutes();
-    const rem = mins % grid;
+    // 5) Cursor inicial (hora local)
+    let cursor = new Date(workStartLocal);
+
+    // Alinear cursor hacia abajo al múltiplo de grid (por ejemplo, 09:07 -> 09:00 con grid=15)
+    const rem = cursor.getMinutes() % grid;
     if (rem !== 0) {
       cursor = addMinutes(cursor, -rem);
     }
 
-    while (differenceInMinutes(workEndZoned, cursor) >= duration + bufferBefore + bufferAfter) {
-      const candidateStartLocal = new Date(cursor);
-      const candidateStartWithBufferLocal = addMinutes(candidateStartLocal, -bufferBefore);
-      const candidateEndLocal = addMinutes(candidateStartLocal, duration);
-      const candidateEndWithBufferLocal = addMinutes(candidateEndLocal, bufferAfter);
+    // Helper para formatear a "YYYY-MM-DDTHH:mm:ss" en la zona
+    const fmtLocalIso = (d: Date) => formatInTimeZone(d, TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss");
 
-      // Convertir los extremos con buffer a UTC para la comprobación con busySlots
-      const candidateStartWithBufferUtc = fromZonedTime(
-        candidateStartWithBufferLocal.toISOString().slice(0, 19),
-        TIMEZONE
-      );
-      const candidateEndWithBufferUtc = fromZonedTime(
-        candidateEndWithBufferLocal.toISOString().slice(0, 19),
-        TIMEZONE
-      );
+    // 6) Iterar en hora local y comparar (conversión a UTC para comparar con busySlots)
+    while (differenceInMinutes(workEndLocal, cursor) >= duration + bufferBefore + bufferAfter) {
+      const startLocal = new Date(cursor);
+      const startLocalWithBuffer = addMinutes(startLocal, -bufferBefore);
+      const endLocal = addMinutes(startLocal, duration);
+      const endLocalWithBuffer = addMinutes(endLocal, bufferAfter);
+
+      // Convertir extremos con buffer a UTC (fromZonedTime espera un local string y devuelve Date UTC)
+      const startUtcWithBuffer = fromZonedTime(fmtLocalIso(startLocalWithBuffer), TIMEZONE);
+      const endUtcWithBuffer = fromZonedTime(fmtLocalIso(endLocalWithBuffer), TIMEZONE);
 
       const overlaps = busySlots.some((ev) => {
-        return !(ev.end <= candidateStartWithBufferUtc || ev.start >= candidateEndWithBufferUtc);
+        return !(ev.end <= startUtcWithBuffer || ev.start >= endUtcWithBuffer);
       });
 
       if (!overlaps) {
-        // label legible en local y ISO de inicio real (sin buffers) en UTC
-        const label = formatInTimeZone(candidateStartLocal, TIMEZONE, "HH:mm");
-        const isoStart = fromZonedTime(candidateStartLocal.toISOString().slice(0, 19), TIMEZONE).toISOString();
-        available.push({ label, iso: isoStart });
+        const label = formatInTimeZone(startLocal, TIMEZONE, "HH:mm");
+        // iso de inicio real en UTC (útil para crear evento): convertimos el local a UTC y hacemos toISOString()
+        const isoStartUtc = fromZonedTime(fmtLocalIso(startLocal), TIMEZONE).toISOString();
+        available.push({ label, iso: isoStartUtc });
       }
 
       cursor = addMinutes(cursor, grid);
