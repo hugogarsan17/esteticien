@@ -8,7 +8,6 @@ const DEFAULT_DURATION_MINUTES = 60;
 function isValidEmail(email: any) {
   if (!email || typeof email !== "string") return false;
   const s = email.trim();
-  // comprobación simple (no 100% RFC, pero eficaz para detectar vacío/errores obvios)
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(s);
 }
@@ -28,7 +27,6 @@ export async function POST(req: Request) {
       serviceTitle,
     } = body;
 
-    // validación básica
     if (!startIso && !(date && time)) {
       return NextResponse.json(
         { error: "Faltan campos: envía startIso (recomendado) o date + time (HH:MM)" },
@@ -41,19 +39,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "duration inválido" }, { status: 400 });
     }
 
-    // construir start Date
+    // construir start Date de forma segura teniendo en cuenta la zona
     let start: Date;
     if (startIso) {
       start = new Date(startIso);
     } else {
+      // esperamos date = "YYYY-MM-DD" y time = "HH:MM"
       const [hhStr, mmStr] = String(time).split(":");
       const hh = Number(hhStr ?? NaN);
       const mm = Number(mmStr ?? NaN);
       if (!Number.isFinite(hh) || !Number.isFinite(mm)) {
         return NextResponse.json({ error: "time debe tener formato HH:MM" }, { status: 400 });
       }
-      start = new Date(date);
-      start.setHours(hh, mm, 0, 0);
+
+      // crear la cadena local y convertirla a UTC según la zona especificada
+      // Ej: "2025-12-10T09:30:00"
+start = new Date(`${date}T${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}:00`);
+      // zonedTimeToUtc devuelve un Date en UTC que corresponde a esa hora local en TIMEZONE
     }
 
     if (Number.isNaN(start.getTime())) {
@@ -104,7 +106,6 @@ export async function POST(req: Request) {
       eventBody.attendees = [{ email: email!.trim() }];
     }
 
-    // intentamos insertar con attendees si el email es válido
     try {
       const insertRes = await calendar.events.insert({
         calendarId,
@@ -114,10 +115,8 @@ export async function POST(req: Request) {
 
       return NextResponse.json({ ok: true, event: insertRes.data });
     } catch (insertErr: any) {
-      // loguear error detallado para debug
       console.error("Google insert error (with attendees):", insertErr?.response?.data || insertErr);
 
-      // si falló y teníamos attendees, intentamos fallback: insertar SIN attendees ni sendUpdates
       if (emailIsValid) {
         try {
           const fallbackBody = { ...eventBody };
@@ -129,7 +128,6 @@ export async function POST(req: Request) {
             sendUpdates: "none",
           });
 
-          // devolver éxito pero con warning para que el frontend muestre que no se envió invitación
           return NextResponse.json({
             ok: true,
             event: fallbackRes.data,
@@ -142,7 +140,6 @@ export async function POST(req: Request) {
         }
       }
 
-      // si no había email o no se pudo fallback, devolver error
       const msg = insertErr?.response?.data?.error?.message || insertErr?.message || "Error al crear evento";
       return NextResponse.json({ error: msg }, { status: 500 });
     }
