@@ -28,7 +28,6 @@ const SERVICES: Service[] = [
 type Slot = { label: string; iso: string };
 
 interface BookingWidgetProps {
-  // Se puede pasar null si no hay servicio preseleccionado
   selectedService?: { id: number; title: string; category?: string; price?: number; duration?: number } | null;
 }
 
@@ -38,7 +37,6 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
     return today.toISOString().split("T")[0]; // YYYY-MM-DD
   });
 
-  // serviceId interno (se sincroniza con `selectedService` cuando se pasa por props)
   const [serviceId, setServiceId] = useState<number>(SERVICES[0].id);
   const currentService = SERVICES.find((s) => s.id === serviceId)!;
 
@@ -50,15 +48,14 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
   const [notes, setNotes] = useState("");
   const [selectedTimeIso, setSelectedTimeIso] = useState<string | null>(null);
   const [bookingStatus, setBookingStatus] = useState<null | "ok" | "error">(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Si el prop selectedService cambia, sincronizamos el selector interno
   useEffect(() => {
     if (selectedService && typeof selectedService.id === "number") {
       setServiceId(selectedService.id);
     }
   }, [selectedService]);
 
-  // Fetch slots cada vez que cambie la fecha o el servicio seleccionado internamente
   useEffect(() => {
     let abort = false;
     async function fetchSlots() {
@@ -85,12 +82,12 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
     return () => {
       abort = true;
     };
-  }, [date, serviceId]); // refetch cuando cambie la fecha o el servicio
+  }, [date, serviceId, currentService.duration]);
 
   async function handleBook() {
     if (!selectedTimeIso || !name) return;
-
     setBookingStatus(null);
+    setSubmitting(true);
 
     try {
       const res = await fetch("/api/book", {
@@ -111,21 +108,22 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
 
       if (res.ok) {
         setBookingStatus("ok");
-        // opcional: limpiar campos
+        // mantener selección visible — opcional limpiar campos:
         // setName(""); setEmail(""); setNotes(""); setSelectedTimeIso(null);
       } else {
-        const err = await res.json().catch(() => null);
-        console.error("booking failed", err);
+        console.error("booking failed", await res.text().catch(() => null));
         setBookingStatus("error");
       }
     } catch (e) {
       console.error("handleBook error:", e);
       setBookingStatus("error");
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
-    <div className="booking-widget">
+    <div className="booking-widget" aria-live="polite">
       <div className="booking-header">
         <h3>Reserva tu cita</h3>
         <p>Elige servicio, día y hora — confirmación instantánea.</p>
@@ -134,7 +132,11 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
       <div className="booking-row">
         <label>
           Servicio:
-          <select value={serviceId} onChange={(e) => setServiceId(Number(e.target.value))}>
+          <select
+            value={serviceId}
+            onChange={(e) => setServiceId(Number(e.target.value))}
+            aria-label="Selecciona servicio"
+          >
             {SERVICES.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.title} — {s.price}€
@@ -152,34 +154,39 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
       <div className="booking-row">
         <label>
           Fecha:
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            aria-label="Selecciona fecha"
+          />
         </label>
       </div>
 
       <div className="booking-row">
         <p>Horas disponibles (según duración del servicio):</p>
+
         {loadingSlots ? (
           <p>Cargando horarios...</p>
         ) : slots.length === 0 ? (
           <p>No hay huecos disponibles este día para este servicio.</p>
         ) : (
-          <div className="booking-slots" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {slots.map((slot) => (
-              <button
-                key={slot.iso}
-                type="button"
-                className={`booking-slot-btn ${selectedTimeIso === slot.iso ? "is-selected" : ""}`}
-                onClick={() => setSelectedTimeIso(slot.iso)}
-                style={{
-                  padding: "8px 12px",
-                  borderRadius: 6,
-                  border: selectedTimeIso === slot.iso ? "2px solid #2b6cb0" : "1px solid #ccc",
-                  background: selectedTimeIso === slot.iso ? "#e6f2ff" : "#fff",
-                }}
-              >
-                {slot.label}
-              </button>
-            ))}
+          <div className="booking-slots" role="list">
+            {slots.map((slot) => {
+              const isSelected = selectedTimeIso === slot.iso;
+              return (
+                <button
+                  key={slot.iso}
+                  type="button"
+                  role="listitem"
+                  className={`booking-slot-btn ${isSelected ? "is-selected" : ""}`}
+                  aria-pressed={isSelected}
+                  onClick={() => setSelectedTimeIso(slot.iso)}
+                >
+                  {slot.label}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -187,32 +194,60 @@ export default function BookingWidget({ selectedService = null }: BookingWidgetP
       <div className="booking-row">
         <label>
           Nombre:
-          <input type="text" placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Tu nombre"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            aria-label="Nombre"
+          />
         </label>
       </div>
 
-      <div className="booking-row">
-        <label>
-          Email (opcional):
-          <input type="email" placeholder="para enviarte confirmación" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-      </div>
+<div className="booking-row">
+  <label>
+    Email:
+    <input
+      type="email"
+      required
+      placeholder="tuemail@ejemplo.com"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      aria-label="Email"
+    />
+  </label>
+</div>
+
 
       <div className="booking-row">
         <label>
           Notas (opcional):
-          <input type="text" placeholder="Alergias, observaciones, etc." value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Alergias, observaciones, etc."
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            aria-label="Notas (opcional)"
+          />
         </label>
       </div>
 
-      <div className="booking-row">
-        <button type="button" className="btn-reservar" onClick={handleBook} disabled={!selectedTimeIso || !name}>
-          Confirmar reserva — {currentService.title}
+      <div className="booking-actions">
+        <button
+          type="button"
+          className="booking-submit"
+          onClick={handleBook}
+          disabled={!selectedTimeIso || !name || submitting}
+          aria-disabled={!selectedTimeIso || !name || submitting}
+        >
+          {submitting ? "Reservando…" : `Confirmar reserva — ${currentService.title}`}
         </button>
       </div>
 
-      {bookingStatus === "ok" && <p className="booking-success">✅ Reserva realizada. Te llegará la cita a tu calendario / email.</p>}
-      {bookingStatus === "error" && <p className="booking-error">❌ Ha habido un problema al reservar. Inténtalo de nuevo.</p>}
+      <div aria-live="polite" style={{ minHeight: 28, marginTop: 12 }}>
+        {bookingStatus === "ok" && <p className="booking-success">✅ Reserva realizada. Te llegará la cita a tu calendario / email.</p>}
+        {bookingStatus === "error" && <p className="booking-error">❌ Ha habido un problema al reservar. Inténtalo de nuevo.</p>}
+      </div>
     </div>
   );
 }
