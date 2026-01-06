@@ -5,6 +5,8 @@ import { formatInTimeZone } from "date-fns-tz";
 import { addMinutes, differenceInMinutes } from "date-fns";
 
 const TIMEZONE = "Europe/Madrid";
+const WORK_START_HOUR = 9;
+const WORK_END_HOUR = 17;
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -13,9 +15,6 @@ export async function GET(req: Request) {
   const duration = parseInt(searchParams.get("duration") || "60", 10);
   const grid = parseInt(searchParams.get("grid") || "15", 10);
 
-  const WORK_START_HOUR = 9;
-  const WORK_END_HOUR = 17;
-
   if (!date) {
     return NextResponse.json({ error: "Falta 'date'" }, { status: 400 });
   }
@@ -23,25 +22,13 @@ export async function GET(req: Request) {
   try {
     const { calendar, calendarId } = await getCalendarClient();
 
-    //
-    // 1) Horario local EXACTO sin conversiones peligrosas
-    //
-    const workStartLocal = new Date(`${date}T09:00:00`);
-    const workEndLocal = new Date(`${date}T17:00:00`);
+    const workStartLocal = new Date(`${date}T${WORK_START_HOUR.toString().padStart(2,"0")}:00:00`);
+    const workEndLocal = new Date(`${date}T${WORK_END_HOUR.toString().padStart(2,"0")}:00:00`);
 
-    //
-    // 2) Para FreeBusy → pasar directo a UTC (JS lo hace bien)
-    //
-    const dayStartUtc = new Date(workStartLocal.getTime());
-    const dayEndUtc = new Date(workEndLocal.getTime());
-
-    //
-    // 3) FreeBusy
-    //
     const fb = await calendar.freebusy.query({
       requestBody: {
-        timeMin: dayStartUtc.toISOString(),
-        timeMax: dayEndUtc.toISOString(),
+        timeMin: workStartLocal.toISOString(),
+        timeMax: workEndLocal.toISOString(),
         timeZone: TIMEZONE,
         items: [{ id: calendarId }],
       },
@@ -52,28 +39,24 @@ export async function GET(req: Request) {
       end: new Date(b.end),
     }));
 
-    //
-    // 4) Generar slots locales NATIVOS sin tocar UTC
-    //
-    const available = [];
+    const available: { label: string; iso: string }[] = [];
     let cursor = new Date(workStartLocal);
 
     const rem = cursor.getMinutes() % grid;
-    if (rem !== 0) cursor = addMinutes(cursor, -rem);
+    if (rem !== 0) cursor = addMinutes(cursor, grid - rem);
 
     while (differenceInMinutes(workEndLocal, cursor) >= duration) {
       const startLocal = new Date(cursor);
       const endLocal = addMinutes(startLocal, duration);
 
-      const startUtc = new Date(startLocal.getTime());
-      const endUtc = new Date(endLocal.getTime());
-
-      const overlaps = busySlots.some(ev => !(ev.end <= startUtc || ev.start >= endUtc));
+      const overlaps = busySlots.some(
+        ev => !(ev.end <= startLocal || ev.start >= endLocal)
+      );
 
       if (!overlaps) {
         available.push({
           label: formatInTimeZone(startLocal, TIMEZONE, "HH:mm"),
-          iso: startUtc.toISOString(),
+          iso: startLocal.toISOString(),
         });
       }
 

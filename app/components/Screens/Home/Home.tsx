@@ -9,111 +9,249 @@ import BookingWidget from "../../BookingWidget/BookingWidget";
 import Footer from "../../layouts/Footer/Footer";
 
 export default function Home() {
-    const services = [
-    {
-      id: 1,
-      img: "/tratamiento-facial.jpg",
-      title: "Tratamientos Faciales",
-      category: "Facial",
-      desc: "Limpieza profunda, hidratación y tratamientos antiedad adaptados a tu tipo de piel.",
-      price: 40,
-    },
-    {
-      id: 2,
-      img: "/TratamientosCorporales.jpg",
-      title: "Tratamientos Corporales",
-      category: "Corporal",
-      desc: "Masajes remodelantes, drenaje y cuidado corporal para mejorar la circulación y la firmeza.",
-      price: 45,
-    },
-    {
-      id: 3,
-      img: "/DepilacionLaser.jpg",
-      title: "Depilación Láser",
-      category: "Depilación",
-      desc: "Depilación láser progresiva para reducir el vello de forma duradera y segura.",
-      price: 45,
-    },
-    {
-      id: 4,
-      img: "/Maquillaje.jpg",
-      title: "Maquillaje",
-      category: "Maquillaje",
-      desc: "Maquillaje social, de día o de noche, realzando tus rasgos sin perder tu esencia.",
-      price: 70,
-    },
-    {
-      id: 5,
-      img: "/Manicura.jpg",
-      title: "Manicura",
-      category: "Uñas",
-      desc: "Manicura clásica o semipermanente con acabado limpio, pulido y duradero.",
-      price: 15,
-    },
-    {
-      id: 6,
-      img: "/Pedicura.png",
-      title: "Pedicura",
-      category: "Uñas",
-      desc: "Cuidado completo de pies, limado, hidratación y esmaltado para una pisada perfecta.",
-      price: 10,
-    },
-    {
-      id: 7,
-      img: "/DepilacionTradicional.jpg",
-      title: "Depilación Tradicional",
-      category: "Depilación",
-      desc: "Depilación con cera para una piel suave y libre de vello durante semanas.",
-      price: 20,
-    },
-    {
-      id: 8,
-      img: "/DisenodeCejas.jpg",
-      title: "Diseño de Cejas",
-      category: "Cejas y Pestañas",
-      desc: "Diseño y perfilado de cejas para enmarcar tu mirada con armonía.",
-      price: 25,
-    },
-    {
-      id: 9,
-      img: "/LiftingdePestana.jpg",
-      title: "Lifting de Pestañas",
-      category: "Cejas y Pestañas",
-      desc: "Curvatura y definición de tus pestañas naturales para un efecto de mirada abierta.",
-      price: 35,
-    },
-    {
-      id: 10,
-      img: "/Microblading.gif",
-      title: "Microblading",
-      category: "Cejas y Pestañas",
-      desc: "Micropigmentación pelo a pelo para cejas definidas y naturales.",
-      price: 180,
-    },
-    {
-      id: 11,
-      img: "/MasajesRelajantes.jpg",
-      title: "Masajes Relajantes",
-      category: "Masajes",
-      desc: "Masajes suaves para aliviar tensiones, mejorar el descanso y bajar el estrés.",
-      price: 45,
-    },
+const services = [
+  // ================= FACIALES =================
+  {
+    id: 1,
+    category: "Tratamientos Faciales",
+    subcategory: "Higiene Facial",
+    title: "Higiene facial",
+    price: 40,
+    img: "/tratamiento-facial.jpg",
+    desc: "Limpieza profunda adaptada a tu tipo de piel.",
+  },
+  {
+    id: 2,
+    category: "Tratamientos Faciales",
+    subcategory: "Higiene + Ácidos",
+    title: "Higiene + tratamiento de ácidos",
+    price: 55,
+    img: "/tratamiento-facial.jpg",
+    desc: "Limpieza facial combinada con ácidos específicos.",
+  },
+  {
+    id: 3,
+    category: "Tratamientos Faciales",
+    subcategory: "Rejuvenecimiento",
+    title: "Tratamiento Derma IR",
+    price: 60,
+    img: "/tratamiento-facial.jpg",
+    desc: "Rejuvenecimiento facial con tecnología Derma IR.",
+  },
+  {
+    id: 4,
+    category: "Tratamientos Faciales",
+    subcategory: "Rejuvenecimiento",
+    title: "Radiofrecuencia facial",
+    price: 50,
+    img: "/tratamiento-facial.jpg",
+    desc: "Estimulación del colágeno y reafirmación.",
+  },
+
+  // ================= CORPORALES =================
+  {
+    id: 5,
+    category: "Tratamientos Corporales",
+    subcategory: "Reductores",
+    title: "Lipo-láser",
+    price: 45,
+    img: "/TratamientosCorporales.jpg",
+    desc: "Reducción localizada y modelado corporal.",
+  },
+  {
+    id: 6,
+    category: "Tratamientos Corporales",
+    subcategory: "Circulatorios",
+    title: "Presoterapia",
+    price: 40,
+    img: "/TratamientosCorporales.jpg",
+    desc: "Mejora la circulación y reduce retención de líquidos.",
+  },
+  {
+    id: 7,
+    category: "Tratamientos Corporales",
+    subcategory: "Reafirmantes",
+    title: "Diatermia",
+    price: 55,
+    img: "/TratamientosCorporales.jpg",
+    desc: "Reafirma y tonifica la piel.",
+  },
+  {
+    id: 8,
+    category: "Tratamientos Corporales",
+    subcategory: "Reductores",
+    title: "Masaje reductor",
+    price: 45,
+    img: "/TratamientosCorporales.jpg",
+    desc: "Masaje intenso para moldear la figura.",
+  },
+
+  // ================= MAQUILLAJE =================
+  {
+    id: 9,
+    category: "Maquillaje",
+    subcategory: "Social",
+    title: "Maquillaje",
+    price: 70,
+    img: "/Maquillaje.jpg",
+    desc: "Maquillaje profesional personalizado.",
+  },
+  {
+    id: 10,
+    category: "Maquillaje",
+    subcategory: "Bodas",
+    title: "Maquillaje novia",
+    price: 120,
+    img: "/Maquillaje.jpg",
+    desc: "Maquillaje especial para el día de tu boda.",
+  },
+  {
+    id: 11,
+    category: "Maquillaje",
+    subcategory: "Bodas",
+    title: "Pack de boda",
+    price: 0,
+    img: "/Maquillaje.jpg",
+    desc: "Novia, madrina e invitadas.",
+  },
+  {
+    id: 12,
+    category: "Maquillaje",
+    subcategory: "Eventos",
+    title: "Maquillaje de fiesta",
+    price: 80,
+    img: "/Maquillaje.jpg",
+    desc: "Ideal para eventos y celebraciones.",
+  },
+  {
+    id: 13,
+    category: "Maquillaje",
+    subcategory: "A domicilio",
+    title: "Maquillaje a domicilio",
+    price: 0,
+    img: "/Maquillaje.jpg",
+    desc: "Servicio de maquillaje en tu domicilio.",
+  },
+
+  // ================= PESTAÑAS =================
+  {
+    id: 14,
+    category: "Pestañas",
+    subcategory: "Lifting",
+    title: "Lifting de pestañas + tinte",
+    price: 35,
+    img: "/LiftingdePestana.jpg",
+    desc: "Curvatura y color para una mirada abierta.",
+  },
+  {
+    id: 15,
+    category: "Pestañas",
+    subcategory: "Tinte",
+    title: "Tinte de pestañas",
+    price: 20,
+    img: "/LiftingdePestana.jpg",
+    desc: "Color intenso y duradero.",
+  },
+  {
+    id: 16,
+    category: "Pestañas",
+    subcategory: "Tinte",
+    title: "Tinte de cejas",
+    price: 20,
+    img: "/DisenodeCejas.jpg",
+    desc: "Define y realza tus cejas.",
+  },
+
+  // ================= MANICURA =================
+  {
+    id: 17,
+    category: "Manicura",
+    subcategory: "Esmaltado",
+    title: "Manicura esmalte normal",
+    price: 15,
+    img: "/Manicura.jpg",
+    desc: "Manicura clásica.",
+  },
+  {
+    id: 18,
+    category: "Manicura",
+    subcategory: "Esmaltado",
+    title: "Manicura semipermanente",
+    price: 20,
+    img: "/Manicura.jpg",
+    desc: "Esmaltado duradero.",
+  },
+  {
+    id: 19,
+    category: "Manicura",
+    subcategory: "Uñas artificiales",
+    title: "Uñas acrílicas",
+    price: 35,
+    img: "/Manicura.jpg",
+    desc: "Extensión y diseño.",
+  },
+
+  // ================= PEDICURA =================
+  {
+    id: 20,
+    category: "Pedicura",
+    subcategory: "Básica",
+    title: "Pedicura completa",
+    price: 25,
+    img: "/Pedicura.png",
+    desc: "Cuidado completo de pies.",
+  },
+
+  // ================= DEPILACIÓN =================
+  {
+    id: 21,
+    category: "Depilación",
+    subcategory: "Láser",
+    title: "Láser de diodo",
+    price: 45,
+    img: "/DepilacionLaser.jpg",
+    desc: "Depilación láser eficaz.",
+  },
+  {
+    id: 22,
+    category: "Depilación",
+    subcategory: "Cera",
+    title: "Depilación facial con cera",
+    price: 15,
+    img: "/DepilacionTradicional.jpg",
+    desc: "Labio, cejas y rostro.",
+  },
+];
+const [activeSubcategory, setActiveSubcategory] = useState("Todas");
+const [activeCategory, setActiveCategory] = useState("Todas");
+
+
+const categories = useMemo(
+  () => ["Todas", ...new Set(services.map(s => s.category))],
+  [services]
+);
+
+const subcategories = useMemo(() => {
+  if (activeCategory === "Todas") return [];
+
+  return [
+    "Todas",
+    ...new Set(
+      services
+        .filter(s => s.category === activeCategory)
+        .map(s => s.subcategory)
+    ),
   ];
+}, [activeCategory, services]);
 
-   const categories = useMemo(
-    () => ["Todos", ...Array.from(new Set(services.map((s) => s.category)))],
-    [services]
-  );
+const filteredServices = useMemo(() => {
+  return services.filter(s => {
+    if (activeCategory !== "Todas" && s.category !== activeCategory) return false;
+    if (activeSubcategory !== "Todas" && s.subcategory !== activeSubcategory) return false;
+    return true;
+  });
+}, [activeCategory, activeSubcategory, services]);
 
-  const [activeCategory, setActiveCategory] = useState("Todos");
-
-  const filteredServices = useMemo(
-    () =>
-      activeCategory === "Todos"
-        ? services
-        : services.filter((s) => s.category === activeCategory),
-    [activeCategory, services]
-  );
   return (
     <div>
       {/* Navbar directamente, sin wrapper con clase navbar-menu */}
@@ -189,32 +327,49 @@ export default function Home() {
         </div>
 
         {/* Filtros por categoría */}
-        <div className="service-filters">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`service-filter-btn ${
-                activeCategory === cat ? "is-active" : ""
-              }`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+       {/* Categorías */}
+<div className="service-filters">
+  {categories.map(cat => (
+    <button
+      key={cat}
+      className={`service-filter-btn ${activeCategory === cat ? "is-active" : ""}`}
+      onClick={() => {
+        setActiveCategory(cat);
+        setActiveSubcategory("Todas"); // reset
+      }}
+    >
+      {cat}
+    </button>
+  ))}
+</div>
 
-        <div className="section-content">
-          {filteredServices.map((service) => (
-            <Cards
-              key={service.id}
-              img={service.img}
-              title={service.title}
-              desc={service.desc}
-              price={service.price}
-            />
-          ))}
-        </div>
-      </div>
+{/* Subcategorías */}
+{activeCategory !== "Todas" && (
+  <div className="service-subfilters">
+    {subcategories.map(sub => (
+      <button
+        key={sub}
+        className={activeSubcategory === sub ? "is-active" : ""}
+        onClick={() => setActiveSubcategory(sub)}
+      >
+        {sub}
+      </button>
+    ))}
+  </div>
+)}
+<div className="section-content">
+  {filteredServices.map(service => (
+    <Cards
+      key={service.id}
+      img={service.img}
+      title={service.title}
+      desc={service.desc}
+      price={service.price}
+    />
+  ))}
+</div>
+
+
 <div className="section reservar" id="reservas">
   <div className="section-title">
     <h2>Reservas</h2>
@@ -226,6 +381,7 @@ export default function Home() {
 
             <Whatsapp />
             <Footer />
+    </div>
     </div>
   );
 }
