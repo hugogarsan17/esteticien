@@ -26,7 +26,7 @@ const services = [
     subcategory: "Higiene + Ácidos",
     title: "Higiene + tratamiento de ácidos",
     price: 55,
-    img: "/tratamiento-facial.jpg",
+    img: "/acidos.jpg",
     desc: "Limpieza facial combinada con ácidos específicos.",
   },
   {
@@ -35,7 +35,7 @@ const services = [
     subcategory: "Rejuvenecimiento",
     title: "Tratamiento Derma IR",
     price: 60,
-    img: "/tratamiento-facial.jpg",
+    img: "/dermair.jpg",
     desc: "Rejuvenecimiento facial con tecnología Derma IR.",
   },
   {
@@ -55,7 +55,7 @@ const services = [
     subcategory: "Reductores",
     title: "Lipo-láser",
     price: 45,
-    img: "/TratamientosCorporales.jpg",
+    img: "/lipolaser.png",
     desc: "Reducción localizada y modelado corporal.",
   },
   {
@@ -64,7 +64,7 @@ const services = [
     subcategory: "Circulatorios",
     title: "Presoterapia",
     price: 40,
-    img: "/TratamientosCorporales.jpg",
+    img: "/Presoterapia.png",
     desc: "Mejora la circulación y reduce retención de líquidos.",
   },
   {
@@ -82,7 +82,7 @@ const services = [
     subcategory: "Reductores",
     title: "Masaje reductor",
     price: 45,
-    img: "/TratamientosCorporales.jpg",
+    img: "/masaje reductor.png",
     desc: "Masaje intenso para moldear la figura.",
   },
 
@@ -93,7 +93,7 @@ const services = [
     subcategory: "Social",
     title: "Maquillaje",
     price: 70,
-    img: "/Maquillaje.jpg",
+    img: "./Maquillaje.jpg",
     desc: "Maquillaje profesional personalizado.",
   },
   {
@@ -102,7 +102,7 @@ const services = [
     subcategory: "Bodas",
     title: "Maquillaje novia",
     price: 120,
-    img: "/Maquillaje.jpg",
+    img: "./maquillaje boda.png",
     desc: "Maquillaje especial para el día de tu boda.",
   },
   {
@@ -111,7 +111,7 @@ const services = [
     subcategory: "Bodas",
     title: "Pack de boda",
     price: 0,
-    img: "/Maquillaje.jpg",
+    img: "/pack-boda.png",
     desc: "Novia, madrina e invitadas.",
   },
   {
@@ -120,7 +120,7 @@ const services = [
     subcategory: "Eventos",
     title: "Maquillaje de fiesta",
     price: 80,
-    img: "/Maquillaje.jpg",
+    img: "/maquillaje fiesta.png",
     desc: "Ideal para eventos y celebraciones.",
   },
   {
