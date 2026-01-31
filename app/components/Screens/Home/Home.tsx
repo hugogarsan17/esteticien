@@ -222,35 +222,25 @@ const services = [
     desc: "Labio, cejas y rostro.",
   },
 ];
-const [activeSubcategory, setActiveSubcategory] = useState("Todas");
-const [activeCategory, setActiveCategory] = useState("Todas");
+const [activeCategory, setActiveCategory] = useState("Tratamientos Faciales");
+
+
 
 
 const categories = useMemo(
-  () => ["Todas", ...new Set(services.map(s => s.category))],
+  () => [...new Set(services.map(s => s.category))],
   [services]
 );
 
-const subcategories = useMemo(() => {
-  if (activeCategory === "Todas") return [];
 
-  return [
-    "Todas",
-    ...new Set(
-      services
-        .filter(s => s.category === activeCategory)
-        .map(s => s.subcategory)
-    ),
-  ];
-}, [activeCategory, services]);
+
 
 const filteredServices = useMemo(() => {
-  return services.filter(s => {
-    if (activeCategory !== "Todas" && s.category !== activeCategory) return false;
-    if (activeSubcategory !== "Todas" && s.subcategory !== activeSubcategory) return false;
-    return true;
-  });
-}, [activeCategory, activeSubcategory, services]);
+  return services.filter(s => s.category === activeCategory);
+}, [activeCategory, services]);
+
+
+
 
   return (
     <div>
@@ -335,7 +325,8 @@ const filteredServices = useMemo(() => {
       className={`service-filter-btn ${activeCategory === cat ? "is-active" : ""}`}
       onClick={() => {
         setActiveCategory(cat);
-        setActiveSubcategory("Todas"); // reset
+
+ // reset
       }}
     >
       {cat}
@@ -344,19 +335,7 @@ const filteredServices = useMemo(() => {
 </div>
 
 {/* Subcategorías */}
-{activeCategory !== "Todas" && (
-  <div className="service-subfilters">
-    {subcategories.map(sub => (
-      <button
-        key={sub}
-        className={activeSubcategory === sub ? "is-active" : ""}
-        onClick={() => setActiveSubcategory(sub)}
-      >
-        {sub}
-      </button>
-    ))}
-  </div>
-)}
+
 <div className="section-content">
   {filteredServices.map(service => (
     <Cards

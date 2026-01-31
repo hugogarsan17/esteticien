@@ -149,3 +149,44 @@ body.no-scroll { overflow: hidden; }
   .mobile-panel, .mobile-overlay { display:none; }
   .brand img { height: 50px; }
 }
+/* =========================
+   NAVBAR underline animation
+   ========================= */
+
+.nav-list li {
+  position: relative;
+}
+
+.nav-list a {
+  position: relative;
+  padding: 6px 2px;
+  font-weight: 600;
+  color: var(--text, #2b2623);
+}
+
+/* línea */
+.nav-list a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--secondary, #6D4A35),
+    var(--accent, #C89A6B)
+  );
+
+  /* animación */
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 1000ms cubic-bezier(.2,.9,.3,1);
+}
+
+/* hover IN */
+.nav-list a:hover::after,
+.nav-list a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
